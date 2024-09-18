@@ -1,0 +1,31 @@
+name: 'Upload artifact'
+on:
+  workflow_dispatch:
+    inputs:
+      content:
+        type: string
+        description: 'content to write to artifact file'
+        required: true
+
+jobs:
+  editFile:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'Write Content'
+        id: 'writer'
+        uses: Sammamus/write-content-to-artifact@main
+        with:
+          content: ${{ inputs.content }}
+
+      - name: 'Archive artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.writer.outputs.filepath }}
+          path: ${{ steps.writer.outputs.filepath }}
+
+
+
