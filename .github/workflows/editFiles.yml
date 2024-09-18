@@ -1,0 +1,60 @@
+name: 'Update edittable_text.txt'
+on:
+  workflow_dispatch:
+    inputs:
+      content:
+        type: string
+        description: 'content to write to edditable-text.txt'
+        required: true
+
+jobs:
+  editFile:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'ls repository contents'
+        shell: bash
+        run: |
+          ls -lah
+
+      - name: 'show user'
+        shell: bash
+        run: |
+          whoami
+
+      - name: 'Show contents of file to be written to'
+        shell: bash
+        run: |
+          cat edittable-text.txt
+
+      - name: 'write content to file'
+        shell: bash
+        run: |
+          echo ${{ inputs.content }} > edittable-text.txt
+
+      - name: 'Verify content of file'
+        shell: bash
+        run: |
+          cat edittable-text.txt
+          
+      - name: 'Commit changes'
+        id: 'commit'
+        shell: bash
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          if [-z "$(git status --porcelain)"]; then
+            echo "::set-output name=push::true"
+          else
+            git commit -m "Add changes" -a
+            echo "::set-output name=push::true"
+          fi
+      - name: 'Push changes'
+        if: ${{ steps.commit.outputs.push == 'true' }}
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
