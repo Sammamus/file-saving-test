@@ -1,4 +1,4 @@
-name: 'Upload artifact'
+name: 'Upload artifact - Liquibase'
 on:
   workflow_dispatch:
 
