@@ -1,0 +1,20 @@
+name: 'Upload artifact'
+on:
+  workflow_dispatch:
+
+jobs:
+  archiveFile:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'Write Content'
+        uses: Sammamus/test-liquibase-action@main
+
+      - name: 'Archive artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'testLiquibaseArchive.txt'
+          path: 'testLiquibaseArchive.txt'
